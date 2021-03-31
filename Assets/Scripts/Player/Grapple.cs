@@ -8,6 +8,12 @@ public class Grapple : MonoBehaviour
 
     LineRenderer grappleLine;
 
+    [SerializeField]
+    Animator playerAnim;
+
+    [SerializeField]
+    Transform grappleFromPoint;
+
     SpringJoint2D joint;
 
     GameObject activePoint;
@@ -28,6 +34,11 @@ public class Grapple : MonoBehaviour
 
     [SerializeField]
     float maxVelocity = 8;
+
+    [SerializeField]
+    float rotationDuration = 0.5f;
+
+    float rotationCounter = 0;
 
     Vector2 grapplePos;
 
@@ -54,7 +65,7 @@ public class Grapple : MonoBehaviour
     {
         if (grappled)
         {
-            grappleLine.SetPositions(new Vector3[] { transform.position, grapplePos });          
+            grappleLine.SetPositions(new Vector3[] { grappleFromPoint.position, grapplePos });          
         }
 
         if (swing && Input.GetMouseButtonUp(0) && !grappleFrame)
@@ -104,20 +115,34 @@ public class Grapple : MonoBehaviour
 
             if (Input.GetKey(KeyCode.D) && transform.position.y <= grapplePos.y + 2)
             {
-                player.AddForce(-transform.right * force);
+                player.AddForce(transform.right * force);
             }
 
             if (Input.GetKey(KeyCode.A) && transform.position.y <= grapplePos.y + 2)
             {
-                player.AddForce(transform.right * force);
+                player.AddForce(-transform.right * force);
             }
 
-            transform.rotation = Quaternion.Euler(new Vector3(transform.rotation.x, transform.rotation.y, Vector2.SignedAngle(Vector2.up, player.position - grapplePos)));
+            Quaternion targetRotation = Quaternion.Euler(new Vector3(transform.rotation.x, transform.rotation.y, Vector2.SignedAngle(Vector2.down, player.position - grapplePos)));
+            transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, rotationCounter/rotationDuration);
+            rotationCounter += Time.fixedDeltaTime;
+            if (rotationCounter >= rotationDuration)
+            {
+                rotationCounter = rotationDuration;
+            }
         }
-
-        if (pull)
+        else if (pull)
         {
             player.AddForce(pullDirection * pullForce);
+        } 
+        else
+        {
+            transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.identity, rotationCounter / rotationDuration);
+            rotationCounter += Time.fixedDeltaTime;
+            if (rotationCounter >= rotationDuration)
+            {
+                rotationCounter = rotationDuration;
+            }
         }
 
         player.velocity = Vector2.ClampMagnitude(player.velocity, maxVelocity);
@@ -135,6 +160,15 @@ public class Grapple : MonoBehaviour
             activePoint = grapplePoint;
             grapplePos = grapplePoint.transform.position;
             joint.distance = Vector2.Distance(transform.position, grapplePos);
+
+            if (grapplePos.x > transform.position.x)
+            {
+                playerAnim.SetBool("RightGrappling", true);
+            }
+            else
+            {
+                playerAnim.SetBool("LeftGrappling", true);
+            }
         }     
         
         if (firstGrapple)
@@ -186,6 +220,10 @@ public class Grapple : MonoBehaviour
         }
 
         grappled = false;      
-        grappleLine.SetPositions(new Vector3[] { transform.position, transform.position });
+        grappleLine.SetPositions(new Vector3[] { grappleFromPoint.position, grappleFromPoint.position });
+        playerAnim.SetBool("RightGrappling", false);
+        playerAnim.SetBool("LeftGrappling", false);
+
+        rotationCounter = 0;
     }
 }
