@@ -63,6 +63,7 @@ public class Grapple : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
         if (grappled)
         {
             grappleLine.SetPositions(new Vector3[] { grappleFromPoint.position, grapplePos });          
@@ -82,7 +83,7 @@ public class Grapple : MonoBehaviour
         }
 
         if (pull)
-        {
+        {           
             pullTimer += Time.deltaTime;
             if (pullTimer >= pullTime)
             {                
@@ -101,7 +102,7 @@ public class Grapple : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (grappled)
+        if (swing)
         {
             if (Input.GetKey(KeyCode.W))
             {
@@ -173,6 +174,7 @@ public class Grapple : MonoBehaviour
         
         if (firstGrapple)
         {
+            transform.parent = null;
             player.isKinematic = false;
             firstGrapple = false;
         }
@@ -190,10 +192,20 @@ public class Grapple : MonoBehaviour
             grapplePos = grapplePoint.transform.position;
             pullDirection = grapplePos - player.position;
             grappleFrame = true;
+
+            if (grapplePos.x > transform.position.x)
+            {
+                playerAnim.SetBool("RightPulling", true);
+            }
+            else
+            {
+                playerAnim.SetBool("LeftPulling", true);
+            }
         }
 
         if (firstGrapple)
         {
+            transform.parent = null;
             player.isKinematic = false;
             firstGrapple = false;
         }
@@ -223,6 +235,8 @@ public class Grapple : MonoBehaviour
         grappleLine.SetPositions(new Vector3[] { grappleFromPoint.position, grappleFromPoint.position });
         playerAnim.SetBool("RightGrappling", false);
         playerAnim.SetBool("LeftGrappling", false);
+        playerAnim.SetBool("RightPulling", false);
+        playerAnim.SetBool("LeftPulling", false);
 
         rotationCounter = 0;
     }

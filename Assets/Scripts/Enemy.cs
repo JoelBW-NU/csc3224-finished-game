@@ -52,6 +52,7 @@ public class Enemy : MonoBehaviour
     AudioSource enemyDamageSoundEffect;
     AudioSource playerDamageSoundEffect;
 
+
     void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player").GetComponent<Rigidbody2D>();

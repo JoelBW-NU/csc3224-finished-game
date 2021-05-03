@@ -163,6 +163,7 @@ public class GameLogic : MonoBehaviour
         {
             PlayerPrefs.SetInt("highscore", score);
         }
+        DetermineAchievements(score, enemiesKilled);
 
         UI.EndGame(score, enemiesKilled, totalPackagesDelivered, packagesDelivered);
         grapple.enabled = false;
@@ -199,5 +200,38 @@ public class GameLogic : MonoBehaviour
     public void ToggleInvulnerability(bool isInvulnerable)
     {
         invulnerable = isInvulnerable;
+    }
+
+    void DetermineAchievements(float score, float enemiesKilled)
+    {
+        if (score >= 1000)
+        {
+            PlayerPrefs.SetInt("scoreAch3", 1);
+        }
+
+        if (score >= 5000)
+        {
+            PlayerPrefs.SetInt("scoreAch2", 1);
+        }
+
+        if (score >= 10000)
+        {
+            PlayerPrefs.SetInt("scoreAch1", 1);
+        }
+
+        if (enemiesKilled >= 10)
+        {
+            PlayerPrefs.SetInt("DDAch3", 1);
+        }
+
+        if (enemiesKilled >= 15)
+        {
+            PlayerPrefs.SetInt("DDAch2", 1);
+        }
+
+        if (enemiesKilled >= 20)
+        {
+            PlayerPrefs.SetInt("DDAch1", 1);
+        }
     }
 }

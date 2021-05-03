@@ -37,6 +37,21 @@ public class MainMenu : MonoBehaviour
     Button quit;
 
     [SerializeField]
+    Button options;
+
+    [SerializeField]
+    GameObject optionsPanel;
+
+    [SerializeField]
+    Button achievements;
+
+    [SerializeField]
+    GameObject achievementsPanel;
+
+    [SerializeField]
+    Button achievementsBack;
+
+    [SerializeField]
     Button howToPlay;
 
     [SerializeField]
@@ -62,8 +77,10 @@ public class MainMenu : MonoBehaviour
     {
         play.onClick.AddListener(Play);
         howToPlay.onClick.AddListener(OpenHowToPlay);
+        achievements.onClick.AddListener(OpenAchievements);
         controls.onClick.AddListener(OpenControls);
         howToPlayBack.onClick.AddListener(CloseHowToPlay);
+        achievementsBack.onClick.AddListener(CloseAchievements);
         controlsBack.onClick.AddListener(CloseControls);
         quit.onClick.AddListener(Quit);
         highScore.text = "High Score: " + PlayerPrefs.GetInt("highscore", 0);
@@ -75,7 +92,10 @@ public class MainMenu : MonoBehaviour
         play.interactable = false;
         howToPlay.interactable = false;
         controls.interactable = false;
+        options.interactable = false;
+        achievements.interactable = false;
         howToPlayBack.interactable = false;
+        achievementsBack.interactable = false;
         controls.interactable = false;
         quit.interactable = false;
         fadeCounter = timeToFade;
@@ -87,6 +107,11 @@ public class MainMenu : MonoBehaviour
         howToPlayPanel.SetActive(true);
     }
 
+    void OpenAchievements()
+    {
+        achievementsPanel.SetActive(true);
+    }
+
     void OpenControls()
     {
         controlsPanel.SetActive(true);
@@ -95,6 +120,11 @@ public class MainMenu : MonoBehaviour
     void CloseHowToPlay()
     {
         howToPlayPanel.SetActive(false);
+    }
+
+    void CloseAchievements()
+    {
+        achievementsPanel.SetActive(false);
     }
 
     void CloseControls()
@@ -117,6 +147,10 @@ public class MainMenu : MonoBehaviour
             title.color = fadeCol;
             play.GetComponent<Image>().color = fadeCol;
             play.GetComponentInChildren<Text>().color = fadeCol;
+            options.GetComponent<Image>().color = fadeCol;
+            options.GetComponentInChildren<Text>().color = fadeCol;
+            achievements.GetComponent<Image>().color = fadeCol;
+            achievements.GetComponentInChildren<Text>().color = fadeCol;
             howToPlay.GetComponent<Image>().color = fadeCol;
             howToPlay.GetComponentInChildren<Text>().color = fadeCol;
             controls.GetComponent<Image>().color = fadeCol;
