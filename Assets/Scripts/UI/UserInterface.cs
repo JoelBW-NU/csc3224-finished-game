@@ -24,6 +24,12 @@ public class UserInterface : MonoBehaviour
     Text packagesDeliveredText;
 
     [SerializeField]
+    Text achievementText;
+
+    [SerializeField]
+    Text achievementHelperText;
+
+    [SerializeField]
     Text scoreText;
 
     [SerializeField]
@@ -47,10 +53,24 @@ public class UserInterface : MonoBehaviour
     [SerializeField]
     GameObject indicatorText;
 
+    [SerializeField]
+    GameObject devToolsPanel;
+
+    [SerializeField]
+    GameObject gameStatsPanel;
+
     void Start()
     {
         playAgain.onClick.AddListener(PlayAgain);       
         indicatorText.SetActive(false);
+    }
+
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.K))
+        {
+            gameStatsPanel.SetActive(!gameStatsPanel.activeSelf);
+        }
     }
 
     public void StartGame()
@@ -59,15 +79,21 @@ public class UserInterface : MonoBehaviour
         Cursor.SetCursor(cursorTexture, new Vector2(cursorTexture.width / 2, cursorTexture.height / 2), CursorMode.Auto);
     }
 
-    public void Pause()
+    public void Pause(bool devTools)
     {
         pauseMenu.SetActive(true);
         Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
+        if (devTools)
+        {
+            devToolsPanel.SetActive(true);
+        }
     }
 
     public void Resume()
     {
         Cursor.SetCursor(cursorTexture, new Vector2(cursorTexture.width / 2, cursorTexture.height / 2), CursorMode.Auto);
+        pauseMenu.SetActive(false);
+        devToolsPanel.SetActive(false);
     }
 
     public void UpdateCollection(int packagesCollected)
@@ -88,14 +114,20 @@ public class UserInterface : MonoBehaviour
         timer.text = "Time Left: " + (mins < 10 ? "0" + mins.ToString() : mins.ToString()) + ":" + (secs < 10 ? "0" + Mathf.RoundToInt(secs).ToString() : secs.ToString());
     }
 
-    public void EndGame(int score, int enemiesKilled, int packagesCollected, int packagesDelivered)
+    public void EndGame(int score, int enemiesKilled, int packagesCollected, int packagesDelivered, bool achievementUnlocked)
     {
         gameOver.SetActive(true);
         gameInfo.SetActive(false);
-        enemiesKilledText.text= enemiesKilled.ToString();
+        enemiesKilledText.text = enemiesKilled.ToString();
         packagesCollectedText.text = packagesCollected.ToString();
         packagesDeliveredText.text = packagesDelivered.ToString();
         scoreText.text = "Overall Score: " + score.ToString();
+
+        if (achievementUnlocked)
+        {
+            achievementText.enabled = true;
+            achievementHelperText.enabled = true;
+        }
     }
 
     void PlayAgain()

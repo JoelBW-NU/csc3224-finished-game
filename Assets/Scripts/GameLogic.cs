@@ -83,11 +83,19 @@ public class GameLogic : MonoBehaviour
 
         if (isPlaying && Input.GetKeyDown(KeyCode.Escape))
         {
-            isPlaying = false;
-            Time.timeScale = 0;
-            grapple.Ungrapple();
-            grapple.enabled = false;
-            UI.Pause();         
+            Pause(false);       
+        }
+
+        if (Input.GetKeyDown(KeyCode.T))
+        {
+            if (isPlaying)
+            {
+                Pause(true);
+            }
+            else
+            {
+                Resume();
+            }
         }
 
         if (playerHealth <= 0)
@@ -102,6 +110,15 @@ public class GameLogic : MonoBehaviour
             indicatorTimeMap[timeLeftWhole] = false;
             indicatorText.ShowText(timeLeftWhole > 6 ? timeLeftWhole + " Seconds Left!" : timeLeftWhole.ToString(), (int)timeLeft < 6 ? 1 : 2);
         }
+    }
+
+    public void Pause(bool devTools)
+    {
+        isPlaying = false;
+        Time.timeScale = 0;
+        grapple.Ungrapple();
+        grapple.enabled = false;
+        UI.Pause(devTools);
     }
 
     public void Resume()
@@ -163,9 +180,8 @@ public class GameLogic : MonoBehaviour
         {
             PlayerPrefs.SetInt("highscore", score);
         }
-        DetermineAchievements(score, enemiesKilled);
 
-        UI.EndGame(score, enemiesKilled, totalPackagesDelivered, packagesDelivered);
+        UI.EndGame(score, enemiesKilled, totalPackagesDelivered, packagesDelivered, DetermineAchievements(score, enemiesKilled));
         grapple.enabled = false;
         grid.SetActive(false);
         foreach (GameObject cell in GameObject.FindGameObjectsWithTag("Cell"))
@@ -202,36 +218,46 @@ public class GameLogic : MonoBehaviour
         invulnerable = isInvulnerable;
     }
 
-    void DetermineAchievements(float score, float enemiesKilled)
+    bool DetermineAchievements(float score, float enemiesKilled)
     {
+        bool unlock = false;
+
         if (score >= 1000)
         {
             PlayerPrefs.SetInt("scoreAch3", 1);
+            unlock = true;
         }
 
         if (score >= 5000)
         {
             PlayerPrefs.SetInt("scoreAch2", 1);
+            unlock = true;
         }
 
         if (score >= 10000)
         {
             PlayerPrefs.SetInt("scoreAch1", 1);
+            unlock = true;
         }
 
         if (enemiesKilled >= 10)
         {
             PlayerPrefs.SetInt("DDAch3", 1);
+            unlock = true;
         }
 
         if (enemiesKilled >= 15)
         {
             PlayerPrefs.SetInt("DDAch2", 1);
+            unlock = true;
         }
 
         if (enemiesKilled >= 20)
         {
             PlayerPrefs.SetInt("DDAch1", 1);
+            unlock = true;
         }
+
+        return unlock;
     }
 }
