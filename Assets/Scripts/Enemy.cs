@@ -40,18 +40,33 @@ public class Enemy : MonoBehaviour
     float smoothSpeed = 0.125f;
 
     [SerializeField]
-    float playerDamageOverTime = 0.01f;
+    float playerDamageMax = 8;
+
+    [SerializeField]
+    float playerDamageMin = 3;
 
     [SerializeField]
     Transform healthIndicator;
 
     float initialIndicatorSize;
 
-    bool onScreen = false;
-
     AudioSource enemyDamageSoundEffect;
     AudioSource playerDamageSoundEffect;
 
+    [SerializeField]
+    float damageTime = 0.5f;
+
+    float damageCounter = 0;
+
+    bool playerContact = false;
+
+    [SerializeField]
+    float slowDownDist;
+
+    bool nearPlayer;
+
+    [SerializeField]
+    float maxDistFromPlayer = 100;
 
     void Start()
     {
@@ -65,9 +80,39 @@ public class Enemy : MonoBehaviour
         playerDamageSoundEffect = GetComponents<AudioSource>()[1];
     }
 
+    void Update()
+    {
+        if (playerContact && damageCounter < damageTime)
+        {
+            damageCounter += Time.deltaTime;
+        }
+    }
+
     // Update is called once per frame
     void FixedUpdate()
     {
+        float distFromPlayer = Vector2.Distance(transform.position, player.position);
+
+        if (distFromPlayer > maxDistFromPlayer)
+        {
+            spawner.RemoveEnemy(gameObject);
+            GetComponentsInChildren<ParticleSystem>()[2].Stop();
+            dead = true;
+            rb.velocity = new Vector2(0, 0);
+            GetComponent<SpriteRenderer>().enabled = false;
+            Destroy(gameObject);
+        }
+
+        if (!nearPlayer && distFromPlayer <= slowDownDist)
+        {
+            nearPlayer = true;
+            rb.velocity = Vector2.zero;
+        } 
+        else if (nearPlayer && distFromPlayer > slowDownDist)
+        {
+            nearPlayer = false;
+        }
+
         if (!dead)
         {
             if (Time.timeScale != 1)
@@ -79,24 +124,25 @@ public class Enemy : MonoBehaviour
                 slowMoFactor = 1;
             }
 
+            float dist = Mathf.Clamp(distFromPlayer, 1, 1.25f);
             float speed;
-            float dist = Mathf.Clamp(Vector2.Distance(transform.position, player.position), 1, 1.2f);
 
-            if (onScreen)
+            if (nearPlayer)
             {
                 speed = player.velocity.magnitude * moveSpeedMultiplier * dist * Time.deltaTime * slowMoFactor;
-            } 
+            }
             else
             {
-                speed = moveSpeedMultiplier * Time.deltaTime * slowMoFactor * dist;
+                speed = moveSpeedMultiplier * Time.deltaTime * slowMoFactor * dist * 20;
             }
-         
+
             rb.velocity = Vector2.Lerp(rb.velocity, transform.up * (speed > minSpeed ? speed : minSpeed), Time.deltaTime * smoothSpeed);
             Vector3 targetVector = player.transform.position - transform.position;
             float rotatingIndex = Vector3.Cross(targetVector, transform.up).z;
             rb.angularVelocity = -1 * rotatingIndex * rotateSpeed * Time.deltaTime * slowMoFactor;
         }
         
+
     }
 
     void OnTriggerEnter2D(Collider2D collision)
@@ -109,6 +155,7 @@ public class Enemy : MonoBehaviour
             if (health <= 0)
             {
                 spawner.RemoveEnemy(gameObject);
+                GetComponentsInChildren<ParticleSystem>()[2].Stop();
                 dead = true;
                 rb.velocity = new Vector2(0, 0);
                 GetComponentInChildren<ParticleSystem>().Play();
@@ -124,31 +171,36 @@ public class Enemy : MonoBehaviour
             collision.gameObject.SetActive(false);
         }
 
-        if (collision.CompareTag("Screen Bounds"))
-        {
-            onScreen = true;
-            rb.velocity = Vector2.zero;
-        }
-
         if (collision.CompareTag("Player") && !dead)
         {
+            game.TakeDamage(Random.Range(playerDamageMin, playerDamageMax));
+            playerContact = true;
             playerDamageSoundEffect.Play();
-        }
-    }
-
-    void OnTriggerStay2D(Collider2D collision)
-    {
-        if (collision.CompareTag("Player") && !dead)
-        {
-            game.TakeDamage(playerDamageOverTime);
         }
     }
 
     void OnTriggerExit2D(Collider2D collision)
     {
-        if (collision.CompareTag("Screen Bounds"))
+
+        if (collision.CompareTag("Player"))
         {
-            onScreen = false;
+            playerContact = false;
         }
+    }
+
+    void OnTriggerStay2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Player") && !dead && damageCounter >= damageTime)
+        {
+            game.TakeDamage(Random.Range(playerDamageMin, playerDamageMax));
+            damageCounter = 0;
+        }
+    }
+
+    public void SetDifficulty(Difficulty difficulty)
+    {
+        moveSpeedMultiplier = difficulty.speedMultiplier;
+        enemyDamagePerHit = difficulty.enemyDamagePerHit;
+        playerDamageMax = difficulty.playerDamageMax;
     }
 }

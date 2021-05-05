@@ -10,8 +10,6 @@ public class EnemySpawner : MonoBehaviour
     [SerializeField]
     int maxEnemies = 5;
 
-    int numEnemiesActive = 0;
-
     [SerializeField]
     float maxRange = 100;
 
@@ -35,6 +33,8 @@ public class EnemySpawner : MonoBehaviour
 
     List<GameObject> activeEnemies;
 
+    Difficulty difficulty;
+
     void Start()
     {
         activeEnemies = new List<GameObject>();
@@ -43,10 +43,13 @@ public class EnemySpawner : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        spawnCounter += Time.deltaTime;
-        if (spawnCounter > timeToSpawn && numEnemiesActive < maxEnemies)
+        if (game.isPlaying)
         {
-            SpawnEnemy();
+            spawnCounter += Time.deltaTime;
+            if (spawnCounter > timeToSpawn && activeEnemies.Count < maxEnemies)
+            {
+                SpawnEnemy();
+            }
         }
     }
 
@@ -55,18 +58,17 @@ public class EnemySpawner : MonoBehaviour
         float x = Random.value <= 0.5 ? Random.Range(-maxRange, -minRange) : Random.Range(minRange, maxRange);
         float y = Random.value <= 0.5 ? Random.Range(-maxRange, -minRange) : Random.Range(minRange, maxRange);
         Vector2 position = new Vector2(player.position.x + x, player.position.y + y);
-        GameObject enemy = Instantiate(enemyPrefab, position, Quaternion.identity);
-        enemy.GetComponent<Enemy>().spawner = this;
-        enemy.GetComponent<Enemy>().game = game;
-        activeEnemies.Add(enemy);
+        Enemy enemy = Instantiate(enemyPrefab, position, Quaternion.identity).GetComponent<Enemy>();
+        enemy.spawner = this;
+        enemy.game = game;
+        enemy.SetDifficulty(difficulty);
+        activeEnemies.Add(enemy.gameObject);
         timeToSpawn = Random.Range(minTimer, maxTimer);
         spawnCounter = 0;
-        numEnemiesActive++;       
     }
 
     public void RemoveEnemy(GameObject enemy)
     {
-        numEnemiesActive--;
         activeEnemies.Remove(enemy);
     }
 
@@ -77,6 +79,11 @@ public class EnemySpawner : MonoBehaviour
             Destroy(enemy);
         }
         activeEnemies.Clear();
-        numEnemiesActive = 0;
+    }
+
+    public void SetDifficulty(Difficulty difficulty)
+    {
+        maxEnemies = difficulty.maxEnemies;
+        this.difficulty = difficulty;
     }
 }

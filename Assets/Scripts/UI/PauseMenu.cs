@@ -20,12 +20,19 @@ public class PauseMenu : MonoBehaviour
     [SerializeField]
     Button mainMenuButton;
 
+    [SerializeField]
+    Button optionsButton;
+
+    [SerializeField]
+    GameObject optionsPanel;
+
     // Start is called before the first frame update
     void Start()
     {
         resume.onClick.AddListener(Resume);
         devToolsButton.onClick.AddListener(OpenDeveloperTools);
         mainMenuButton.onClick.AddListener(OpenMainMenu);
+        optionsButton.onClick.AddListener(OpenOptions);
     }
 
     void Resume()
@@ -42,5 +49,10 @@ public class PauseMenu : MonoBehaviour
     void OpenMainMenu()
     {
         game.PlayAgain();
+    }
+
+    void OpenOptions()
+    {
+        optionsPanel.SetActive(true);
     }
 }

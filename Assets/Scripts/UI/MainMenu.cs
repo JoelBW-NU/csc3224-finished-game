@@ -40,6 +40,9 @@ public class MainMenu : MonoBehaviour
     Button options;
 
     [SerializeField]
+    Button optionsBack;
+
+    [SerializeField]
     GameObject optionsPanel;
 
     [SerializeField]
@@ -72,27 +75,47 @@ public class MainMenu : MonoBehaviour
     [SerializeField]
     Text devToolsText;
 
+    [SerializeField]
+    GameObject difficultyPanel;
+
+    [SerializeField]
+    GameObject levelPanel;
+
     // Start is called before the first frame update
     void Start()
     {
-        play.onClick.AddListener(Play);
+        play.onClick.AddListener(OpenDifficulty);
         howToPlay.onClick.AddListener(OpenHowToPlay);
         achievements.onClick.AddListener(OpenAchievements);
+        options.onClick.AddListener(OpenOptions);
         controls.onClick.AddListener(OpenControls);
         howToPlayBack.onClick.AddListener(CloseHowToPlay);
+        optionsBack.onClick.AddListener(CloseOptions);
         achievementsBack.onClick.AddListener(CloseAchievements);
         controlsBack.onClick.AddListener(CloseControls);
         quit.onClick.AddListener(Quit);
         highScore.text = "High Score: " + PlayerPrefs.GetInt("highscore", 0);
     }
 
-    void Play()
+    void OpenDifficulty()
+    {
+        difficultyPanel.SetActive(true);
+    }
+
+    public void OpenLevel()
+    {
+        levelPanel.SetActive(true);
+    }
+
+    public void Play()
     {
         fade = true;
         play.interactable = false;
         howToPlay.interactable = false;
         controls.interactable = false;
         options.interactable = false;
+        optionsBack.interactable = false;
+        achievementsBack.interactable = false;
         achievements.interactable = false;
         howToPlayBack.interactable = false;
         achievementsBack.interactable = false;
@@ -105,6 +128,11 @@ public class MainMenu : MonoBehaviour
     void OpenHowToPlay()
     {
         howToPlayPanel.SetActive(true);
+    }
+
+    void OpenOptions()
+    {
+        optionsPanel.SetActive(true);
     }
 
     void OpenAchievements()
@@ -120,6 +148,11 @@ public class MainMenu : MonoBehaviour
     void CloseHowToPlay()
     {
         howToPlayPanel.SetActive(false);
+    }
+
+    void CloseOptions()
+    {
+        optionsPanel.SetActive(false);
     }
 
     void CloseAchievements()

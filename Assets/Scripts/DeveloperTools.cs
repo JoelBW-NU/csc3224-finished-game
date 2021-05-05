@@ -27,6 +27,8 @@ public class DeveloperTools : MonoBehaviour
     public void TogglePlayerMovement(bool isOn)
     {
         playerMovement.enabled = isOn;
+        grapple.Ungrapple();
+        grapple.firstGrapple = false;
         grapple.enabled = !isOn;
         player.GetComponent<Rigidbody2D>().velocity = Vector2.zero;
         player.GetComponent<Rigidbody2D>().isKinematic = isOn;

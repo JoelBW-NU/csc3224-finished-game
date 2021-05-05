@@ -17,10 +17,16 @@ public class FireProjectile : MonoBehaviour
 
     AudioSource soundEffect;
 
+    LineRenderer aimLine;
+
+    [HideInInspector]
+    public bool showAimLine;
+
     void Start()
     {
         nextFire = Time.time;
         soundEffect = GetComponent<AudioSource>();
+        aimLine = GetComponent<LineRenderer>();
     }
 
     void Update()
@@ -28,6 +34,18 @@ public class FireProjectile : MonoBehaviour
         Vector3 dir = Input.mousePosition - Camera.main.WorldToScreenPoint(transform.position);
         float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
         transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+
+        Vector3 mousePos = Input.mousePosition;
+        mousePos.z = Camera.main.nearClipPlane;
+
+        if (showAimLine)
+        {
+            aimLine.SetPositions(new Vector3[] { transform.position, Camera.main.ScreenToWorldPoint(mousePos) });
+        }
+        else
+        {
+            aimLine.SetPositions(new Vector3[] { transform.position, transform.position });
+        }
 
         if (Input.GetKey(KeyCode.Space) && Time.time > nextFire)
         {

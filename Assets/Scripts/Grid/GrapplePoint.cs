@@ -22,9 +22,12 @@ public class GrapplePoint : MonoBehaviour
     [SerializeField]
     Text countdownText;
 
+    SpriteRenderer glow;
+
     void Start()
     {
         countdownText.text = "";
+        glow = GetComponentsInChildren<SpriteRenderer>()[1];
     }
 
     void OnMouseOver()
@@ -45,7 +48,7 @@ public class GrapplePoint : MonoBehaviour
                 countdownBegun = true;
             }
 
-            GetComponent<SpriteRenderer>().color = new Color(0, 1, 0);
+            glow.enabled = true;
         }       
     }
 
@@ -53,7 +56,7 @@ public class GrapplePoint : MonoBehaviour
     {
         if (Time.timeScale != 0)
         {
-            GetComponent<SpriteRenderer>().color = new Color(1, 1, 1);
+            glow.enabled = false;
         }
     }
 

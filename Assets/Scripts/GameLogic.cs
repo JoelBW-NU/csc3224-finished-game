@@ -39,7 +39,8 @@ public class GameLogic : MonoBehaviour
     [SerializeField]
     HealthBar healthBar;
 
-    bool isPlaying = false;
+    [HideInInspector]
+    public bool isPlaying = false;
 
     [SerializeField]
     DeveloperTools devTools;
@@ -55,6 +56,25 @@ public class GameLogic : MonoBehaviour
     int[] indicatorTimes;
 
     Dictionary<int, bool> indicatorTimeMap;
+
+    [SerializeField]
+    GameObject music;
+
+    Difficulty difficulty;
+
+    Level level;
+
+    [SerializeField]
+    EnemySpawner spawner;
+
+    [SerializeField]
+    SpriteRenderer feature;
+
+    [SerializeField]
+    SpriteRenderer background;
+
+    [SerializeField]
+    GameObject backdrop; 
 
     void Awake()
     {
@@ -142,6 +162,8 @@ public class GameLogic : MonoBehaviour
         isPlaying = true;
         timerActive = true;
         UI.StartGame();
+        music.GetComponents<AudioSource>()[0].Stop();
+        music.GetComponents<AudioSource>()[1].Play();
     }
 
     public void PackageCollected()
@@ -180,6 +202,7 @@ public class GameLogic : MonoBehaviour
         {
             PlayerPrefs.SetInt("highscore", score);
         }
+        music.SetActive(false);
 
         UI.EndGame(score, enemiesKilled, totalPackagesDelivered, packagesDelivered, DetermineAchievements(score, enemiesKilled));
         grapple.enabled = false;
@@ -187,6 +210,16 @@ public class GameLogic : MonoBehaviour
         foreach (GameObject cell in GameObject.FindGameObjectsWithTag("Cell"))
         {
             cell.SetActive(false);
+        }
+        
+        if (level.name == "Cloud")
+        {
+            PlayerPrefs.SetInt("cloudPlayed", 1);
+        }
+
+        if (level.name == "Space")
+        {
+            PlayerPrefs.SetInt("spacePlayed", 1);
         }
     }
 
@@ -222,42 +255,59 @@ public class GameLogic : MonoBehaviour
     {
         bool unlock = false;
 
-        if (score >= 1000)
+        if (score >= 1000 && PlayerPrefs.GetInt("scoreAch3") != 1)
         {
             PlayerPrefs.SetInt("scoreAch3", 1);
             unlock = true;
         }
 
-        if (score >= 5000)
+        if (score >= 5000 && PlayerPrefs.GetInt("scoreAch2") != 1)
         {
             PlayerPrefs.SetInt("scoreAch2", 1);
             unlock = true;
         }
 
-        if (score >= 10000)
+        if (score >= 10000 && PlayerPrefs.GetInt("scoreAch1") != 1)
         {
             PlayerPrefs.SetInt("scoreAch1", 1);
             unlock = true;
         }
 
-        if (enemiesKilled >= 10)
+        if (enemiesKilled >= 15 && PlayerPrefs.GetInt("DDAch3") != 1)
         {
             PlayerPrefs.SetInt("DDAch3", 1);
             unlock = true;
         }
 
-        if (enemiesKilled >= 15)
+        if (enemiesKilled >= 20 && PlayerPrefs.GetInt("DDAch2") != 1)
         {
             PlayerPrefs.SetInt("DDAch2", 1);
             unlock = true;
         }
 
-        if (enemiesKilled >= 20)
+        if (enemiesKilled >= 25 && PlayerPrefs.GetInt("DDAch1") != 1)
         {
             PlayerPrefs.SetInt("DDAch1", 1);
             unlock = true;
         }
 
         return unlock;
+    }
+
+    public void SetDifficulty(Difficulty difficulty)
+    {
+        this.difficulty = difficulty;
+        spawner.SetDifficulty(difficulty);
+    }
+
+    public void ChooseLevel(Level level)
+    {
+        this.level = level;
+        feature.sprite = level.feature;
+        background.sprite = level.background;
+        foreach (SpriteRenderer renderer in backdrop.GetComponentsInChildren<SpriteRenderer>())
+        {
+            renderer.sprite = level.parallax;
+        }
     }
 }

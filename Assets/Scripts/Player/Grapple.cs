@@ -47,7 +47,8 @@ public class Grapple : MonoBehaviour
     [SerializeField]
     float ropeChangeRate = 0.01f;
 
-    bool firstGrapple = true;
+    [HideInInspector]
+    public bool firstGrapple = true;
 
     AudioSource soundEffect;
 
