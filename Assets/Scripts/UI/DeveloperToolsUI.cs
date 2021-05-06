@@ -35,8 +35,13 @@ public class DeveloperToolsUI : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        speedSlider.interactable = easyMoveToggle.isOn;
+        speedSlider.interactable = tools.easyMovementIsOn;
         returnButton.onClick.AddListener(Return);
+
+        easyMoveToggle.isOn = tools.easyMovementIsOn;
+        pauseTimerToggle.isOn = tools.timerIsPaused;
+        invulnerabilityToggle.isOn = tools.invulnerability;
+        spawnEnemiesToggle.isOn = tools.enemiesSpawn;
 
         easyMoveExplainButton.onClick.AddListener(ToggleEasyMoveExplain);
 
