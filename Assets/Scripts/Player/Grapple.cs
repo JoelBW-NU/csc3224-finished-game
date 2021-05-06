@@ -150,7 +150,7 @@ public class Grapple : MonoBehaviour
         player.velocity = Vector2.ClampMagnitude(player.velocity, maxVelocity);
     }
 
-    public void Swing(GameObject grapplePoint)
+    public bool Swing(GameObject grapplePoint)
     {
         if (!swing && !pull)
         {
@@ -161,7 +161,7 @@ public class Grapple : MonoBehaviour
             joint.connectedBody = grapplePoint.GetComponent<Rigidbody2D>();
             activePoint = grapplePoint;
             grapplePos = grapplePoint.transform.position;
-            joint.distance = Vector2.Distance(transform.position, grapplePos);
+            joint.distance = Vector2.Distance(transform.position, grapplePoint.transform.position);
 
             if (grapplePos.x > transform.position.x)
             {
@@ -171,19 +171,21 @@ public class Grapple : MonoBehaviour
             {
                 playerAnim.SetBool("LeftGrappling", true);
             }
-        }     
-        
-        if (firstGrapple)
-        {
-            transform.parent = null;
-            player.isKinematic = false;
-            firstGrapple = false;
+
+            if (firstGrapple)
+            {
+                transform.parent = null;
+                player.isKinematic = false;
+                firstGrapple = false;
+            }
+            return true;
         }
+        return false;
     }
 
-    public void Pull(GameObject grapplePoint)
+    public bool Pull(GameObject grapplePoint)
     {
-        if (!swing)
+        if (!swing && !pull)
         {
             soundEffect.Play();
             player.velocity = new Vector2(0, 0);
@@ -202,14 +204,16 @@ public class Grapple : MonoBehaviour
             {
                 playerAnim.SetBool("LeftPulling", true);
             }
-        }
 
-        if (firstGrapple)
-        {
-            transform.parent = null;
-            player.isKinematic = false;
-            firstGrapple = false;
+            if (firstGrapple)
+            {
+                transform.parent = null;
+                player.isKinematic = false;
+                firstGrapple = false;
+            }
+            return true;
         }
+        return false;
     }
 
     public void Ungrapple()
@@ -229,6 +233,7 @@ public class Grapple : MonoBehaviour
         if (swing)
         {
             swing = false;
+            joint.connectedBody = null;
             joint.enabled = false;
         }
 

@@ -14753,7 +14753,7 @@ MonoBehaviour:
   damageTime: 0.4
   slowDownDist: 25
   maxDistFromPlayer: 100
-  bulletPushSize: 750
+  bulletPushSize: 900
 --- !u!50 &5917446209065462777
 Rigidbody2D:
   serializedVersion: 4

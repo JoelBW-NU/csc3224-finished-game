@@ -36,16 +36,22 @@ public class GrapplePoint : MonoBehaviour
         {
             if (Input.GetMouseButtonDown(1))
             {
-                grapple.Pull(gameObject);
-                grappled = true;
-                countdownBegun = true;
+                if (grapple.Pull(gameObject))
+                {
+                    grappled = true;
+                    countdownBegun = true;
+                    transform.parent = null;
+                }
             }
 
             if (Input.GetMouseButtonDown(0))
             {
-                grapple.Swing(gameObject);
-                grappled = true;
-                countdownBegun = true;
+                if (grapple.Swing(gameObject))
+                {
+                    grappled = true;
+                    countdownBegun = true;
+                    transform.parent = null;
+                }
             }
 
             glow.enabled = true;
