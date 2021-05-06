@@ -24,6 +24,32 @@ public class DeveloperTools : MonoBehaviour
     public bool enemiesSpawn = true;
     public bool invulnerability = false;
 
+    void Update()
+    {
+        if (game.isPlaying)
+        {
+            if (Input.GetKeyDown(KeyCode.M))
+            {
+                TogglePlayerMovement(!easyMovementIsOn);
+            }
+
+            if (Input.GetKeyDown(KeyCode.I))
+            {
+                ToggleInvulnerability(!invulnerability);
+            }
+
+            if (Input.GetKeyDown(KeyCode.P))
+            {
+                ToggleTimer(!timerIsPaused);
+            }
+
+            if (Input.GetKeyDown(KeyCode.B))
+            {
+                ToggleEnemiesSpawn(!enemiesSpawn);
+            }
+        }    
+    }
+
     public void TogglePlayerMovement(bool isOn)
     {
         playerMovement.enabled = isOn;

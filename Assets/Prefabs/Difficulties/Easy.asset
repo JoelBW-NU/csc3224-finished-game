@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 741c0ebee9f0bff48bbad45a28fade78, type: 3}
   m_Name: Easy
   m_EditorClassIdentifier: 
+  scoreMultiplier: 0.8
   maxEnemies: 2
-  speedMultiplier: 47
+  speedMultiplier: 48
   enemyDamagePerHit: 50
   playerDamageMax: 6

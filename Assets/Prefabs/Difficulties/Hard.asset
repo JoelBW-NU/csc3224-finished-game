@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 741c0ebee9f0bff48bbad45a28fade78, type: 3}
   m_Name: Hard
   m_EditorClassIdentifier: 
+  scoreMultiplier: 1.5
   maxEnemies: 7
   speedMultiplier: 53
   enemyDamagePerHit: 25

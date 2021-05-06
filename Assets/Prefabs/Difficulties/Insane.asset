@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 741c0ebee9f0bff48bbad45a28fade78, type: 3}
   m_Name: Insane
   m_EditorClassIdentifier: 
+  scoreMultiplier: 2
   maxEnemies: 10
-  speedMultiplier: 55
+  speedMultiplier: 56
   enemyDamagePerHit: 20
   playerDamageMax: 15

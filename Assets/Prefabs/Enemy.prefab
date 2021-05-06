@@ -14741,7 +14741,7 @@ MonoBehaviour:
   enemyDamagePerHit: 35
   player: {fileID: 0}
   moveSpeedMultiplier: 50
-  minSpeed: 20
+  minSpeed: 25
   rotateSpeed: 2000
   slowMoMultiplier: 5
   spawner: {fileID: 0}
@@ -14753,6 +14753,7 @@ MonoBehaviour:
   damageTime: 0.4
   slowDownDist: 25
   maxDistFromPlayer: 100
+  bulletPushSize: 750
 --- !u!50 &5917446209065462777
 Rigidbody2D:
   serializedVersion: 4

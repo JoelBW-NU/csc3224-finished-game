@@ -197,14 +197,14 @@ public class GameLogic : MonoBehaviour
         isPlaying = false;
         Time.timeScale = 0;
         int totalPackagesDelivered = packagesCollected + packagesDelivered;
-        int score = (enemiesKilled * enemiesKilledScore) + (totalPackagesDelivered * collectPackagesScore) + (packagesDelivered * deliveredPackagesScore);
+        int score = (int) (((enemiesKilled * enemiesKilledScore) + (totalPackagesDelivered * collectPackagesScore) + (packagesDelivered * deliveredPackagesScore)) * difficulty.scoreMultiplier);
         if (score > PlayerPrefs.GetInt("highscore", 0))
         {
             PlayerPrefs.SetInt("highscore", score);
         }
         music.SetActive(false);
 
-        UI.EndGame(score, enemiesKilled, totalPackagesDelivered, packagesDelivered, DetermineAchievements(score, enemiesKilled));
+        UI.EndGame(score, enemiesKilled, totalPackagesDelivered, packagesDelivered, difficulty.scoreMultiplier, DetermineAchievements(score, enemiesKilled));
         grapple.enabled = false;
         grid.SetActive(false);
         foreach (GameObject cell in GameObject.FindGameObjectsWithTag("Cell"))

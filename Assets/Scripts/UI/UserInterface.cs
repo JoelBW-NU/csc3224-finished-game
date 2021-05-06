@@ -24,6 +24,9 @@ public class UserInterface : MonoBehaviour
     Text packagesDeliveredText;
 
     [SerializeField]
+    Text difficultyMultiplierText;
+
+    [SerializeField]
     Text achievementText;
 
     [SerializeField]
@@ -59,10 +62,17 @@ public class UserInterface : MonoBehaviour
     [SerializeField]
     GameObject gameStatsPanel;
 
+    [SerializeField]
+    GameObject backdropForeground;
+
+    [SerializeField]
+    GameObject backdropBackground;
+
     void Start()
     {
         playAgain.onClick.AddListener(PlayAgain);       
         indicatorText.SetActive(false);
+        Cursor.visible = true;
     }
 
     void Update()
@@ -77,6 +87,8 @@ public class UserInterface : MonoBehaviour
     {
         indicatorText.SetActive(true);
         Cursor.visible = false;
+        backdropBackground.SetActive(false);
+        backdropForeground.SetActive(false);
     }
 
     public void Pause(bool devTools)
@@ -114,7 +126,7 @@ public class UserInterface : MonoBehaviour
         timer.text = "Time Left: " + (mins < 10 ? "0" + mins.ToString() : mins.ToString()) + ":" + (secs < 10 ? "0" + Mathf.RoundToInt(secs).ToString() : secs.ToString());
     }
 
-    public void EndGame(int score, int enemiesKilled, int packagesCollected, int packagesDelivered, bool achievementUnlocked)
+    public void EndGame(int score, int enemiesKilled, int packagesCollected, int packagesDelivered, float difficultyMultiplier, bool achievementUnlocked)
     {
         Cursor.visible = true;
         gameOver.SetActive(true);
@@ -122,6 +134,7 @@ public class UserInterface : MonoBehaviour
         enemiesKilledText.text = enemiesKilled.ToString();
         packagesCollectedText.text = packagesCollected.ToString();
         packagesDeliveredText.text = packagesDelivered.ToString();
+        difficultyMultiplierText.text = difficultyMultiplier.ToString();
         scoreText.text = "Overall Score: " + score.ToString();
 
         if (achievementUnlocked)

@@ -68,13 +68,18 @@ public class Enemy : MonoBehaviour
     [SerializeField]
     float maxDistFromPlayer = 100;
 
+    [SerializeField]
+    float bulletPushSize = 1;
+
+    Vector3 targetVector;
+
     void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player").GetComponent<Rigidbody2D>();
         rb = GetComponent<Rigidbody2D>();
         GetComponentInChildren<ParticleSystem>().Stop();
         GetComponentsInChildren<ParticleSystem>()[1].Stop();
-        rotateSpeed *= Random.Range(0.6f, 2f);
+        rotateSpeed *= Random.Range(0.2f, 2.5f);
         initialIndicatorSize = healthIndicator.transform.localScale.x;
         enemyDamageSoundEffect = GetComponent<AudioSource>();
         playerDamageSoundEffect = GetComponents<AudioSource>()[1];
@@ -124,7 +129,7 @@ public class Enemy : MonoBehaviour
                 slowMoFactor = 1;
             }
 
-            float dist = Mathf.Clamp(distFromPlayer, 1, 1.25f);
+            float dist = Mathf.Clamp(distFromPlayer, 1, 1.3f);
             float speed;
 
             if (nearPlayer)
@@ -137,7 +142,7 @@ public class Enemy : MonoBehaviour
             }
 
             rb.velocity = Vector2.Lerp(rb.velocity, transform.up * (speed > minSpeed ? speed : minSpeed), Time.deltaTime * smoothSpeed);
-            Vector3 targetVector = player.transform.position - transform.position;
+            targetVector = player.transform.position - transform.position;
             float rotatingIndex = Vector3.Cross(targetVector, transform.up).z;
             rb.angularVelocity = -1 * rotatingIndex * rotateSpeed * Time.deltaTime * slowMoFactor;
         }
@@ -150,6 +155,7 @@ public class Enemy : MonoBehaviour
         if (collision.CompareTag("Player Projectile") && !dead)
         {
             health -= enemyDamagePerHit;
+            rb.AddForce(-targetVector.normalized * bulletPushSize);
             if (health < 0) health = 0;
             healthIndicator.localScale = new Vector3(health / 100 * initialIndicatorSize, healthIndicator.localScale.y, healthIndicator.localScale.z);           
             if (health <= 0)
