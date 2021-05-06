@@ -116,6 +116,7 @@ public class UserInterface : MonoBehaviour
 
     public void EndGame(int score, int enemiesKilled, int packagesCollected, int packagesDelivered, bool achievementUnlocked)
     {
+        Cursor.visible = true;
         gameOver.SetActive(true);
         gameInfo.SetActive(false);
         enemiesKilledText.text = enemiesKilled.ToString();
