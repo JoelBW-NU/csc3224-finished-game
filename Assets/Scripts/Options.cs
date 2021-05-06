@@ -25,7 +25,7 @@ public class Options : MonoBehaviour
 
         if (!PlayerPrefs.HasKey("aimLine"))
         {
-            PlayerPrefs.SetInt("aimLine", 1);
+            PlayerPrefs.SetInt("aimLine", 0);
         }
 
         UpdateSound(PlayerPrefs.GetInt("soundOn") == 1);

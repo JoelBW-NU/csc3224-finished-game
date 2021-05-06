@@ -76,13 +76,13 @@ public class UserInterface : MonoBehaviour
     public void StartGame()
     {
         indicatorText.SetActive(true);
-        Cursor.SetCursor(cursorTexture, new Vector2(cursorTexture.width / 2, cursorTexture.height / 2), CursorMode.Auto);
+        Cursor.visible = false;
     }
 
     public void Pause(bool devTools)
     {
         pauseMenu.SetActive(true);
-        Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
+        Cursor.visible = true;
         if (devTools)
         {
             devToolsPanel.SetActive(true);
@@ -91,7 +91,7 @@ public class UserInterface : MonoBehaviour
 
     public void Resume()
     {
-        Cursor.SetCursor(cursorTexture, new Vector2(cursorTexture.width / 2, cursorTexture.height / 2), CursorMode.Auto);
+        Cursor.visible = false;
         pauseMenu.SetActive(false);
         devToolsPanel.SetActive(false);
     }
